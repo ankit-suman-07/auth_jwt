@@ -1,4 +1,5 @@
 const express = require('express');
+const jwt = require('jsonwebtoken');
 const app = express();
 
 app.use(express.json());
@@ -15,7 +16,7 @@ app.post('/api/login', (req, res) => {
     })
     if (user) {
         res.json({
-            message: 'Login successful',
+            message: 'SignIn successful',
             user: {
                 id: user.id,
                 username: user.username,
