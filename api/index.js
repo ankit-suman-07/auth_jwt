@@ -1,6 +1,22 @@
 const express = require('express');
 const app = express();
 
-app.listen(3000, () => {
-  console.log('Server is running on port 3000');
+app.use(express.json());
+
+const users = [
+    { id: 1, username: 'John Doe', password: 'john@1234', isAdmin: true },
+    { id: 2, username: 'Jane Smith', password: 'jane@1234', isAdmin: false },
+];
+
+app.post('/api/login', (req, res) => {
+    const {username, password} = req.body;
+    const user = users.find(user => user.username === username && user.password === password);
+    if (!user) {
+        return res.status(401).json({ message: 'Invalid username or password' });
+    }
+    res.json("Hey, this is working :: " + username);
+})
+
+app.listen(5000, () => {
+  console.log('Server is running on port 5000');
 });
