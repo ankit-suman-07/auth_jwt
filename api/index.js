@@ -10,11 +10,22 @@ const users = [
 
 app.post('/api/login', (req, res) => {
     const {username, password} = req.body;
-    const user = users.find(user => user.username === username && user.password === password);
-    if (!user) {
+    const user = users.find((user) => {
+        return (user.username === username && user.password === password);
+    })
+    if (user) {
+        res.json({
+            message: 'Login successful',
+            user: {
+                id: user.id,
+                username: user.username,
+                isAdmin: user.isAdmin
+            }
+        });
+    }else {
         return res.status(401).json({ message: 'Invalid username or password' });
     }
-    res.json("Hey, this is working :: " + username);
+    //res.json("Hey, this is working :: " + username);
 })
 
 app.listen(5000, () => {
