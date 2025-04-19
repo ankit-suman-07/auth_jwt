@@ -9,6 +9,30 @@ const users = [
     { id: 2, username: 'Jane Smith', password: 'jane@1234', isAdmin: false },
 ];
 
+let refreshTokens = [];
+
+app.post("/api/refresh", (req, res) => {
+    //  take the refresh token from user
+    const refreshToken = req.body.token;
+
+    // send error if there is no token or invalid token
+    if(!refreshToken) return res.status(401).json("You are not authenticated!")
+    if(refreshToken !== "abstractrefreshToken") return res.status(403).json("Refresh token is not valid!")
+
+    // if everything is okay then create a new access token, refresh token and send to user
+
+})
+
+const generateAccessToken = (user) => {
+    const secretKey = 'abstractsecretkey'; // Replace with your own secret key
+    return jwt.sign({id: user.id, isAdmin: user.isAdmin}, secretKey, {expiresIn: '1h'});
+}
+
+const generateRefreshToken = (user) => {
+    const refreshSecretKey = 'abstractrefreshsecretkey'; // Replace with your own secret key
+    return jwt.sign({id: user.id, isAdmin: user.isAdmin}, refreshSecretKey, {expiresIn: '1h'});
+}
+
 app.post('/api/login', (req, res) => {
     const {username, password} = req.body;
     const user = users.find((user) => {
@@ -16,8 +40,9 @@ app.post('/api/login', (req, res) => {
     })
     if (user) {
         // Generate access token
-        const secretKey = 'abstractsecretkey'; // Replace with your own secret key
-        const accessToken = jwt.sign({id: user.id, isAdmin: user.isAdmin}, secretKey, {expiresIn: '1h'});
+
+        generateAccessToken(user);
+        generateRefreshToken(user);
         res.json({
             message: 'SignIn successful',
             user: {
@@ -49,13 +74,19 @@ const verify = (req, res, next) => {
     }
 }
 
-app.delete('/api/users/:userId', verify, (req, res, next) => {
-    if (req.user.id === req.params.userId || req.user.isAdmin) {
-        res.status(200).json({message: 'User has been deleted!'});
+app.delete('/api/users/:userId', verify, (req, res) => {
+    const userIdFromToken = req.user.id;
+    const userIdToDelete = req.params.userId;
+    console.log(userIdFromToken)
+    console.log(userIdToDelete)
+
+    if (userIdFromToken + "" === userIdToDelete + "" || req.user.isAdmin) {
+        return res.status(200).json({ message: 'User has been deleted!' });
     } else {
-        res.status(403).json({message: 'You are not allowed to delete this user!'});
+        return res.status(403).json({ message: 'You are not allowed to delete this user!' });
     }
-})
+});
+
 
 app.listen(5000, () => {
   console.log('Server is running on port 5000');
