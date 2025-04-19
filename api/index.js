@@ -37,7 +37,7 @@ const verify = (req, res, next) => {
     const authHeaders = req.headers.authorization;
     if(authHeaders) {
         const token = authHeaders.split(" ")[1];
-        jwt.verify(token, secretKey, (error, user) => {
+        jwt.verify(token, 'abstractsecretkey', (error, user) => {
             if(error) {
                 return res.status(403).json("Token is not valid");
             } 
@@ -49,6 +49,13 @@ const verify = (req, res, next) => {
     }
 }
 
+app.delete('/api/users/:userId', verify, (req, res, next) => {
+    if (req.user.id === req.params.userId || req.user.isAdmin) {
+        res.status(200).json({message: 'User has been deleted!'});
+    } else {
+        res.status(403).json({message: 'You are not allowed to delete this user!'});
+    }
+})
 
 app.listen(5000, () => {
   console.log('Server is running on port 5000');
