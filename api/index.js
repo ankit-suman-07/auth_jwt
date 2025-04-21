@@ -71,6 +71,8 @@ app.post('/api/login', (req, res) => {
     //res.json("Hey, this is working :: " + username);
 })
 
+
+
 const verify = (req, res, next) => {
     const authHeaders = req.headers.authorization;
     if(authHeaders) {
@@ -86,6 +88,12 @@ const verify = (req, res, next) => {
         res.status(401).json({message: 'You are not authenticated!'});
     }
 }
+
+app.post("/api/logout", verify, (req, res) => {
+    const refreshToken = req.body.token;
+    refreshTokens = refreshTokens.filter((token) => token !== refreshToken); // remove the used refresh token from the array
+    res.status(200).json("You logged out successfully.");
+})
 
 app.delete('/api/users/:userId', verify, (req, res) => {
     const userIdFromToken = req.user.id;
