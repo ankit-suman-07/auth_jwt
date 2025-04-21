@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import './SignUp.css'
 
 const SignUp = () => {
     const [username, setUsername] = useState('');
@@ -21,19 +22,19 @@ const SignUp = () => {
             });
     }, []);
   return (
-    <div>
-        <div>
-            <div>Log In</div>
-            <div>
+    <div className='login' >
+        <div className='login-box' >
+            <div className='login-header' >Log In</div>
+            <div className='login-username' >
                 <label htmlFor="username">Username:</label>
                 <input type="text" id="username" value={username} onChange={(e) => setUsername(e.target.value)} />
             </div>
-            <div>
+            <div className='login-password' >
                 <label htmlFor="password">Password:</label>
                 <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />      
             </div>
-            <div>
-                <button onClick={() => login}>Sign Up</button>
+            <div className='login-btn' >
+                <button onClick={() => login}>Log In</button>
             </div>
         </div>
     </div>
