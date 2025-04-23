@@ -11,16 +11,29 @@ const SignUp = () => {
     }
 
     useEffect(() => {
-        // Fetch the data from the server
-        fetch('/api/signup')
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-            });
+        // Define the username and password you want to send
+        const credentials = {
+            username: 'yourUsername',
+            password: 'yourPassword'
+        };
+    
+        // Send POST request
+        fetch('http://localhost:5000/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(credentials)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Login response:', data);
+        })
+        .catch(error => {
+            console.error('Error logging in:', error);
+        });
     }, []);
+    
   return (
     <div className='login' >
         <div className='login-box' >
